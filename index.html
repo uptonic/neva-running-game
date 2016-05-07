@@ -65,10 +65,12 @@
         pause();
       } else {
         $(button).addClass('controls__button--playing').text('Stop');
+        resetDefaultAction()
         play(defaultTimer);
       }
     }
 
+    // React to start/stop button clicks
     $(document).on('click', '[data-behavior~=toggle_play]', function(event) {
       toggleButton(this);
       event.preventDefault();
