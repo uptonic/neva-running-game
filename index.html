@@ -9,18 +9,19 @@
     var defaultAction = "run";
     var actionsArray = ["leap", "jump", "duck", "tornado", "chicken"];
     var isPlaying = false;
+    var isAction = false;
     var defaultTimer = 3000;
     var actionTimer = 1000;
 
     // Start the loop, beginning with a 3 second "RUN!" state
-    $(document).ready(function() {
-      play(defaultTimer);
-    });
+    //$(document).ready(function() {
+      //play(defaultTimer);
+    //});
 
     // Main game loop
     function play(timer) {
       myInterval = setInterval(function(){
-        if(isPlaying) {
+        if(isAction) {
           resetDefaultAction();
           resetTimer(defaultTimer);
         } else {
@@ -28,11 +29,19 @@
           resetTimer(actionTimer);
         }
       }, timer);
+
+      isPlaying = true;
+    }
+
+    // Stop playing
+    function pause() {
+      clearInterval(myInterval);
+      isPlaying = false;
     }
 
     // Reset timer to a new value
     function resetTimer(timer){
-      clearInterval(myInterval);
+      pause();
       play(timer);
     }
 
@@ -40,19 +49,39 @@
     function pickRandomAction() {
       var random = actionsArray[Math.floor(Math.random() * actionsArray.length)];
       $('.action').text(random);
-      isPlaying = true;
+      isAction = true;
     }
 
     // Resets the text to the default action
     function resetDefaultAction() {
       $('.action').text(defaultAction);
-      isPlaying = false;
+      isAction = false;
     }
+
+    // Handle start/stop clicks
+    function toggleButton(button) {
+      if(isPlaying) {
+        $(button).removeClass('controls__button--playing').text('Start');
+        pause();
+      } else {
+        $(button).addClass('controls__button--playing').text('Stop');
+        play(defaultTimer);
+      }
+    }
+
+    $(document).on('click', '[data-behavior~=toggle_play]', function(event) {
+      toggleButton(this);
+      event.preventDefault();
+    });
   </script>
 </head>
 
 <body>
   <div class="action-container">
+    <div class="controls">
+      <a href="#" class="controls__button" data-behavior="toggle_play">Start</a>
+    </div>
+
     <div class="action-container__action">
       <span class="action">run</span>!
     </div>

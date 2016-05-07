@@ -14,7 +14,27 @@ body {
 }
 
 a {
-  color: #cc0099;
+  color: #fff;
+}
+
+.controls {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
+
+.controls__button {
+  display: inline-block;
+  background-color: white;
+  color: green;
+  padding: 0.5rem 3rem;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 0.6rem;
+}
+
+.controls__button--playing {
+  color: red;
 }
 
 .action-container {
