@@ -37,6 +37,13 @@ a {
   color: red;
 }
 
+.clock {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 2.4rem;
+}
+
 .action-container {
   display: table;
   height: 100%;

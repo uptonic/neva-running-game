@@ -2,79 +2,118 @@
 <html>
 <head>
   <title>Running App!</title>
-  <link rel="stylesheet" href="screen.css">
-  <script type="text/javascript" src="jquery.js" ></script>
+  <link rel="stylesheet" href="stylesheets/screen.css">
+  <script type="text/javascript" src="javascript/jquery.js" ></script>
+  <script type="text/javascript" src="javascript/jquery.fittext.js" ></script>
 
   <script type="text/javascript">
     var defaultAction = "run";
-    var actionsArray = ["leap", "jump", "duck", "tornado", "chicken"];
-    var isPlaying = false;
-    var isAction = false;
-    var defaultTimer = 3000;
-    var actionTimer = 1000;
+    var actionsArray = ["leap", "jump", "duck", "tornado", "chicken", "swim"];
 
-    // Start the loop, beginning with a 3 second "RUN!" state
-    //$(document).ready(function() {
-      //play(defaultTimer);
-    //});
+    var isPlaying = false;    // Are we playing?
+    var isAction = false;     // Are we showing someing in actionsArray?
+    var defaultTimer = 3000;  // 3 seconds
+    var actionTimer = 1000;   // 1 second
 
-    // Main game loop
-    function play(timer) {
-      myInterval = setInterval(function(){
-        if(isAction) {
-          resetDefaultAction();
-          resetTimer(defaultTimer);
+    // Keep text in viewport
+    $(document).ready(function() {
+      $('[data-behavior~=fit_text]').fitText(0.7);
+    });
+
+    var Game = {
+      // Main game loop
+      play: function(timer) {
+        var self = this;
+
+        if(isPlaying) {
+          Clock.resume();
         } else {
-          pickRandomAction();
-          resetTimer(actionTimer);
+          Clock.start();
         }
-      }, timer);
 
-      isPlaying = true;
-    }
+        this.interval = setInterval(function(){
+          if(isAction) {
+            self.resetDefaultAction();
+            self.resetTimer(defaultTimer);
+          } else {
+            self.pickRandomAction();
+            self.resetTimer(actionTimer);
+          }
+        }, timer);
 
-    // Stop playing
-    function pause() {
-      clearInterval(myInterval);
-      isPlaying = false;
-    }
+        isPlaying = true;
+      },
 
-    // Reset timer to a new value
-    function resetTimer(timer){
-      pause();
-      play(timer);
-    }
+      // Stop playing
+      pause: function() {
+        Clock.pause();
+        clearInterval(this.interval);
+        isPlaying = false;
+      },
 
-    // Picks a random play action from the actionsArray
-    function pickRandomAction() {
-      var random = actionsArray[Math.floor(Math.random() * actionsArray.length)];
-      $('.action').text(random);
-      isAction = true;
-    }
+      // Reset timer to a new value
+      resetTimer: function(timer){
+        this.pause();
+        this.play(timer);
+      },
 
-    // Resets the text to the default action
-    function resetDefaultAction() {
-      $('.action').text(defaultAction);
-      isAction = false;
-    }
+      // Picks a random play action from the actionsArray
+      pickRandomAction: function() {
+        var random = actionsArray[Math.floor(Math.random() * actionsArray.length)];
+        $('.action').text(random);
+        isAction = true;
+      },
 
-    // Handle start/stop clicks
-    function toggleButton(button) {
-      if(isPlaying) {
-        $(button).removeClass('controls__button--playing').text('Start');
-        pause();
-      } else {
-        $(button).addClass('controls__button--playing').text('Stop');
-        resetDefaultAction()
-        play(defaultTimer);
+      // Resets the text to the default action
+      resetDefaultAction: function() {
+        $('.action').text(defaultAction);
+        isAction = false;
+      },
+
+      // Handle start/stop clicks
+      toggleButton: function(button) {
+        if(isPlaying) {
+          $(button).removeClass('controls__button--playing').text('Resume');
+          this.pause();
+        } else {
+          $(button).addClass('controls__button--playing').text('Pause');
+          this.resetDefaultAction();
+          this.play(defaultTimer);
+        }
       }
-    }
+    };
 
     // React to start/stop button clicks
     $(document).on('click', '[data-behavior~=toggle_play]', function(event) {
-      toggleButton(this);
+      Game.toggleButton(this);
       event.preventDefault();
     });
+
+
+    // Clock timer
+    var Clock = {
+      totalSeconds: 0,
+
+      start: function () {
+        var self = this;
+        function pad(val) { return val > 9 ? val : "0" + val; }
+        this.interval = setInterval(function () {
+          self.totalSeconds += 1;
+
+          $('[data-role~=clock_minutes]').text(pad(Math.floor(self.totalSeconds / 60 % 60)));
+          $('[data-role~=clock_seconds]').text(pad(parseInt(self.totalSeconds % 60)));
+        }, 1000);
+      },
+
+      pause: function () {
+        clearInterval(this.interval);
+        delete this.interval;
+      },
+
+      resume: function () {
+        if (!this.interval) this.start();
+      }
+    };
   </script>
 </head>
 
@@ -84,7 +123,11 @@
       <a href="#" class="controls__button" data-behavior="toggle_play">Start</a>
     </div>
 
-    <div class="action-container__action">
+    <div class="clock">
+      <span data-role="clock_minutes">00</span>:<span data-role="clock_seconds">00</span>
+    </div>
+
+    <div class="action-container__action" data-behavior="fit_text">
       <span class="action">run</span>!
     </div>
   </div>
