@@ -7,13 +7,15 @@
   <script type="text/javascript" src="javascript/jquery.fittext.js" ></script>
 
   <script type="text/javascript">
-    var defaultAction = "run";
-    var actionsArray = ["leap", "jump", "duck", "tornado", "chicken", "swim"];
+    var defaultAction   = "run";
+    var defaultColor    = "green";
+    var actionsArray    = ["leap", "jump", "duck", "tornado", "chicken", "swim"];
+    var colorsArray     = ["plum", "gold", "crimson", "darkgray", "coral", "aqua" ];
 
-    var isPlaying = false;    // Are we playing?
-    var isAction = false;     // Are we showing someing in actionsArray?
-    var defaultTimer = 3000;  // 3 seconds
-    var actionTimer = 1000;   // 1 second
+    var isPlaying     = false;  // Are we playing?
+    var isAction      = false;  // Are we showing someing in actionsArray?
+    var defaultTimer  = 3000;   // 3 seconds
+    var actionTimer   = 1000;   // 1 second
 
     // Keep text in viewport
     $(document).ready(function() {
@@ -59,14 +61,20 @@
 
       // Picks a random play action from the actionsArray
       pickRandomAction: function() {
-        var random = actionsArray[Math.floor(Math.random() * actionsArray.length)];
-        $('.action').text(random);
+        var random = Math.floor(Math.random() * actionsArray.length);
+        var color = colorsArray[random];
+        var action = actionsArray[random];
+
+        $('.action').text(action);
+        $('body').css( "background-color", color );
+
         isAction = true;
       },
 
       // Resets the text to the default action
       resetDefaultAction: function() {
         $('.action').text(defaultAction);
+        $('body').css( "background-color", '' );
         isAction = false;
       },
 
