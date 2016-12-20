@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="stylesheets/screen.css">
   <script type="text/javascript" src="javascript/jquery.js" ></script>
   <script type="text/javascript" src="javascript/jquery.fittext.js" ></script>
+  <script type="text/javascript" src="javascript/jquery.transition.js" ></script>
 
   <script type="text/javascript">
     var defaultAction   = "run";
@@ -28,6 +29,8 @@
         var self = this;
 
         this.interval = setInterval(function(){
+          self.animateAction();
+
           if(isAction) {
             self.resetDefaultAction();
             self.resetTimer(defaultTimer);
@@ -74,14 +77,19 @@
       toggleButton: function(button) {
         if(isPlaying) {
           $(button).removeClass('controls__button--playing').text('Resume');
-          Clock.pause();
           this.pause();
+          Clock.pause();
         } else {
           $(button).addClass('controls__button--playing').text('Pause');
           this.resetDefaultAction();
-          Clock.resume();
           this.play(defaultTimer);
+          Clock.resume();
         }
+      },
+
+      // Animate the action label
+      animateAction: function() {
+        $('[data-role~=action_container]').transitionClass('action-container__action--animated');
       }
     };
 
@@ -129,7 +137,7 @@
       <span data-role="clock_minutes">00</span>:<span data-role="clock_seconds">00</span>
     </div>
 
-    <div class="action-container__action" data-behavior="fit_text">
+    <div class="action-container__action" data-role="action_container" data-behavior="fit_text">
       <span class="action">run</span>!
     </div>
   </div>
