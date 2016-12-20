@@ -83,6 +83,7 @@
           $(button).addClass('controls__button--playing').text('Pause');
           this.resetDefaultAction();
           this.play(defaultTimer);
+          this.animateAction();
           Clock.resume();
         }
       },
@@ -97,6 +98,13 @@
     $(document).on('click', '[data-behavior~=toggle_play]', function(event) {
       Game.toggleButton(this);
       event.preventDefault();
+    });
+
+    // Handle tapping the spacebar
+    $(document).keyup(function(event){
+      if(event.keyCode == 32){
+        Game.toggleButton('[data-behavior~=toggle_play]');
+      }
     });
 
 
