@@ -27,12 +27,6 @@
       play: function(timer) {
         var self = this;
 
-        if(isPlaying) {
-          Clock.resume();
-        } else {
-          Clock.start();
-        }
-
         this.interval = setInterval(function(){
           if(isAction) {
             self.resetDefaultAction();
@@ -48,7 +42,6 @@
 
       // Stop playing
       pause: function() {
-        Clock.pause();
         clearInterval(this.interval);
         isPlaying = false;
       },
@@ -67,7 +60,6 @@
 
         $('.action').text(action);
         $('body').css( "background-color", color );
-
         isAction = true;
       },
 
@@ -82,10 +74,12 @@
       toggleButton: function(button) {
         if(isPlaying) {
           $(button).removeClass('controls__button--playing').text('Resume');
+          Clock.pause();
           this.pause();
         } else {
           $(button).addClass('controls__button--playing').text('Pause');
           this.resetDefaultAction();
+          Clock.resume();
           this.play(defaultTimer);
         }
       }
